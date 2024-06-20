@@ -30,7 +30,7 @@ export function Header() {
           to="/"
           className="hidden group md:flex items-center gap-3 text-lg font-semibold md:text-base p-1.5 rounded"
         >
-          <AudioLines className="h-6 w-6 text-primary" />
+          <AudioLines className="size-6 text-primary" />
           <span className="text-foreground">Media Downloader</span>
         </Link>
         {links.map((link) => (
