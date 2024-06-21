@@ -12,6 +12,22 @@ import {
   SelectTrigger,
   SelectValue,
 } from "../components/ui/select";
+import { Progress } from "../components/ui/progress";
+import {
+  Card,
+  CardContent,
+  CardDescription,
+  CardHeader,
+  CardTitle,
+} from "../components/ui/card";
+import { Badge } from "../components/ui/badge";
+import thumbnail from "../assets/thumbnail-placeholder.jpeg";
+import {
+  Tabs,
+  TabsList,
+  TabsTrigger,
+  TabsContent,
+} from "../components/ui/tabs";
 
 export function HomePage() {
   const [url, setUrl] = useState(
@@ -45,6 +61,11 @@ export function HomePage() {
         Digite o link do vídeo ou da música, no campo abaixo, e clique no botão
         para baixar a música no formato em que desejar
       </p>
+
+      <div className="flex flex-col gap-1.5">
+        <p className="text-sm font-medium leading-none">Esperando o download</p>
+        <Progress value={20} />
+      </div>
 
       <section className="flex flex-col gap-3">
         <div className="flex flex-col gap-1.5">
@@ -94,6 +115,45 @@ export function HomePage() {
           ))}
         </div>
       </section>
+      <Card>
+        <CardHeader>
+          <CardTitle>
+            Rick Astley - Never Gonna Give You Up (Official Music Video)
+          </CardTitle>
+          <div className="flex justify-between">
+            <CardDescription className="flex justify-between items-start">
+              Risk Astley
+            </CardDescription>
+            <Badge variant="secondary" className="self-end">
+              3:33
+            </Badge>
+          </div>
+        </CardHeader>
+        <CardContent className="flex gap-8 flex-col md:flex-row">
+          <div className="w-full max-w-[340px]">
+            <img
+              src={thumbnail}
+              alt="imagem de thumbnail"
+              className=" object-contain rounded-lg border"
+            />
+          </div>
+          <Tabs defaultValue="mp3" className="w-full">
+            <div className="flex justify-between items-start">
+              <h4 className="text-2xl font-semibold tracking-tight border-b border-primary px-1 pr-4">
+                Tipos de mídia
+              </h4>
+              <TabsList>
+                <TabsTrigger value="mp3">MP3</TabsTrigger>
+                <TabsTrigger value="audio">Audio</TabsTrigger>
+                <TabsTrigger value="video">Video</TabsTrigger>
+              </TabsList>
+            </div>
+            <TabsContent value="mp3">MP3</TabsContent>
+            <TabsContent value="audio">Audio</TabsContent>
+            <TabsContent value="video">Video</TabsContent>
+          </Tabs>
+        </CardContent>
+      </Card>
     </div>
   );
 }
