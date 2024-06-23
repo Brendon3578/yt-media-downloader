@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { Input } from "../components/ui/input";
 import { Label } from "../components/ui/label";
 import { Button } from "../components/ui/button";
@@ -28,11 +28,36 @@ import {
   TabsTrigger,
   TabsContent,
 } from "../components/ui/tabs";
+import { mediaDetailsData } from "../utils/data";
+import { MediaTable } from "./../components/MediaTable/index";
+import { mediaDetailsType } from "../types/mediaTypes";
+import { LoadingMedia } from "../components/LoadingMedia";
+import { formatMediaDuration } from "../utils/formatMediaDduration";
 
 export function HomePage() {
   const [url, setUrl] = useState(
     "https://www.youtube.com/watch?v=dQw4w9WgXcQ&ab_channel=RickAstley"
   );
+  const [mediaDetails, setMediaDetails] = useState<mediaDetailsType>();
+
+  useEffect(() => {
+    setMediaDetails(mediaDetailsData);
+  }, []);
+
+  const mp3MediaFormats = mediaDetails?.formats
+    .filter(({ mimeType }) => mimeType.includes("audio/mp4;"))
+    .map((format) => ({
+      ...format,
+      container: format.container.replace("mp4", "mp3"),
+    }));
+
+  const audioMediaFormats = mediaDetails?.formats.filter((format) =>
+    format.mimeType.includes("audio/")
+  );
+  const videoMediaFormats = mediaDetails?.formats.filter((format) =>
+    format.mimeType.includes("video/")
+  );
+
   const selectData = [
     {
       id: "music-format",
@@ -115,45 +140,63 @@ export function HomePage() {
           ))}
         </div>
       </section>
-      <Card>
-        <CardHeader>
-          <CardTitle>
-            Rick Astley - Never Gonna Give You Up (Official Music Video)
-          </CardTitle>
-          <div className="flex justify-between">
-            <CardDescription className="flex justify-between items-start">
-              Risk Astley
-            </CardDescription>
-            <Badge variant="secondary" className="self-end">
-              3:33
-            </Badge>
-          </div>
-        </CardHeader>
-        <CardContent className="flex gap-8 flex-col md:flex-row">
-          <div className="w-full max-w-[340px]">
-            <img
-              src={thumbnail}
-              alt="imagem de thumbnail"
-              className=" object-contain rounded-lg border"
-            />
-          </div>
-          <Tabs defaultValue="mp3" className="w-full">
-            <div className="flex justify-between items-start">
-              <h4 className="text-2xl font-semibold tracking-tight border-b border-primary px-1 pr-4">
-                Tipos de mídia
-              </h4>
-              <TabsList>
-                <TabsTrigger value="mp3">MP3</TabsTrigger>
-                <TabsTrigger value="audio">Audio</TabsTrigger>
-                <TabsTrigger value="video">Video</TabsTrigger>
-              </TabsList>
+      {mediaDetails && (
+        <Card>
+          <CardHeader>
+            <CardTitle>{mediaDetails.title}</CardTitle>
+            <div className="flex justify-between">
+              <CardDescription className="flex justify-between items-start">
+                {mediaDetails.author}
+              </CardDescription>
+              <Badge variant="secondary" className="self-end">
+                {formatMediaDuration(parseInt(mediaDetails.duration))}
+              </Badge>
             </div>
-            <TabsContent value="mp3">MP3</TabsContent>
-            <TabsContent value="audio">Audio</TabsContent>
-            <TabsContent value="video">Video</TabsContent>
-          </Tabs>
-        </CardContent>
-      </Card>
+          </CardHeader>
+          <CardContent className="flex gap-8 flex-col md:flex-row">
+            <div className="w-full max-w-[340px]">
+              <img
+                src={thumbnail}
+                alt="imagem de thumbnail"
+                className=" object-contain rounded-lg border"
+              />
+            </div>
+            <Tabs defaultValue="mp3" className="w-full">
+              <div className="flex justify-between items-start">
+                <h4 className="text-2xl font-semibold tracking-tight border-b border-primary px-1 pr-4">
+                  Tipos de mídia
+                </h4>
+                <TabsList>
+                  <TabsTrigger value="mp3">MP3</TabsTrigger>
+                  <TabsTrigger value="audio">Audio</TabsTrigger>
+                  <TabsTrigger value="video">Video</TabsTrigger>
+                </TabsList>
+              </div>
+              <TabsContent value="mp3">
+                {mp3MediaFormats ? (
+                  <MediaTable formats={mp3MediaFormats} />
+                ) : (
+                  <LoadingMedia />
+                )}
+              </TabsContent>
+              <TabsContent value="audio">
+                {audioMediaFormats ? (
+                  <MediaTable formats={audioMediaFormats} />
+                ) : (
+                  <LoadingMedia />
+                )}
+              </TabsContent>
+              <TabsContent value="video">
+                {videoMediaFormats ? (
+                  <MediaTable formats={videoMediaFormats} />
+                ) : (
+                  <LoadingMedia />
+                )}
+              </TabsContent>
+            </Tabs>
+          </CardContent>
+        </Card>
+      )}
     </div>
   );
 }
