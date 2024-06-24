@@ -7,10 +7,14 @@ export type mediaFormatType = {
   size: number;
 };
 
-export type mediaDetailsType = {
+export interface MediaInfoData {
   title: string;
   author: string;
   thumbnail: string;
   duration: string;
   formats: mediaFormatType[];
-};
+}
+
+export interface MediaInfoResponse {
+  data: MediaInfoData;
+}

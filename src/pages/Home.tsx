@@ -1,56 +1,22 @@
-import { useEffect, useState } from "react";
+import { useState } from "react";
 import { Input } from "../components/ui/input";
 import { Label } from "../components/ui/label";
 import { Button } from "../components/ui/button";
 import { Search } from "lucide-react";
 
 import { Progress } from "../components/ui/progress";
-import {
-  Card,
-  CardContent,
-  CardDescription,
-  CardHeader,
-  CardTitle,
-} from "../components/ui/card";
-import { Badge } from "../components/ui/badge";
-import thumbnail from "../assets/thumbnail-placeholder.jpeg";
-import {
-  Tabs,
-  TabsList,
-  TabsTrigger,
-  TabsContent,
-} from "../components/ui/tabs";
-import { mediaDetailsData } from "../utils/data";
-import { MediaTable } from "./../components/MediaTable/index";
-import { mediaDetailsType } from "../types/mediaTypes";
-import { LoadingMedia } from "../components/LoadingMedia";
-import { formatMediaDuration } from "../utils/formatMediaDduration";
+
 import { MediaFormatDialog } from "../components/MediaFormatDialog";
+import { useMediaData } from "../hooks/useMediaData";
+import { MediaCard } from "../components/MediaCard";
+import { MediaCardSkeleton } from "../components/MediaCard/skeleton";
 
 export function HomePage() {
   const [url, setUrl] = useState(
     "https://www.youtube.com/watch?v=dQw4w9WgXcQ&ab_channel=RickAstley"
   );
-  const [mediaDetails, setMediaDetails] = useState<mediaDetailsType>();
+  const { data, isLoading } = useMediaData(url);
   console.log("renderizou");
-
-  useEffect(() => {
-    setMediaDetails(mediaDetailsData);
-  }, []);
-
-  const mp3MediaFormats = mediaDetails?.formats
-    .filter(({ mimeType }) => mimeType.includes("audio/mp4;"))
-    .map((format) => ({
-      ...format,
-      container: format.container.replace("mp4", "mp3"),
-    }));
-
-  const audioMediaFormats = mediaDetails?.formats.filter((format) =>
-    format.mimeType.includes("audio/")
-  );
-  const videoMediaFormats = mediaDetails?.formats.filter((format) =>
-    format.mimeType.includes("video/")
-  );
 
   return (
     <div className="flex flex-col gap-8">
@@ -98,63 +64,9 @@ export function HomePage() {
           </Button>
         </MediaFormatDialog>
       </section>
-      {mediaDetails && (
-        <Card>
-          <CardHeader>
-            <CardTitle>{mediaDetails.title}</CardTitle>
-            <div className="flex justify-between">
-              <CardDescription className="flex justify-between items-start">
-                {mediaDetails.author}
-              </CardDescription>
-              <Badge variant="secondary" className="self-end">
-                {formatMediaDuration(parseInt(mediaDetails.duration))}
-              </Badge>
-            </div>
-          </CardHeader>
-          <CardContent className="flex gap-8 flex-col md:flex-row">
-            <div className="w-full max-w-[340px]">
-              <img
-                src={thumbnail}
-                alt="imagem de thumbnail"
-                className=" object-contain rounded-lg border"
-              />
-            </div>
-            <Tabs defaultValue="mp3" className="w-full">
-              <div className="flex justify-between items-start">
-                <h4 className="text-2xl font-semibold tracking-tight border-b border-primary px-1 pr-4">
-                  Tipos de mídia
-                </h4>
-                <TabsList>
-                  <TabsTrigger value="mp3">MP3</TabsTrigger>
-                  <TabsTrigger value="audio">Audio</TabsTrigger>
-                  <TabsTrigger value="video">Video</TabsTrigger>
-                </TabsList>
-              </div>
-              <TabsContent value="mp3">
-                {mp3MediaFormats ? (
-                  <MediaTable formats={mp3MediaFormats} />
-                ) : (
-                  <LoadingMedia />
-                )}
-              </TabsContent>
-              <TabsContent value="audio">
-                {audioMediaFormats ? (
-                  <MediaTable formats={audioMediaFormats} />
-                ) : (
-                  <LoadingMedia />
-                )}
-              </TabsContent>
-              <TabsContent value="video">
-                {videoMediaFormats ? (
-                  <MediaTable formats={videoMediaFormats} />
-                ) : (
-                  <LoadingMedia />
-                )}
-              </TabsContent>
-            </Tabs>
-          </CardContent>
-        </Card>
-      )}
+      {/* <MediaCardSkeleton /> */}
+      {isLoading && <MediaCardSkeleton />}
+      {data?.data && <MediaCard media={data?.data} />}
     </div>
   );
 }
