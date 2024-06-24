@@ -6,7 +6,6 @@ import {
   CardHeader,
   CardTitle,
 } from "../ui/card";
-import thumbnail from "../../assets/thumbnail-placeholder.jpeg";
 import { Tabs, TabsList, TabsTrigger, TabsContent } from "../ui/tabs";
 import { formatMediaDuration } from "../../utils/formatMediaDduration";
 import { LoadingMedia } from "../LoadingMedia";
@@ -45,7 +44,7 @@ export function MediaCard({ media }: MediaCardProps) {
       <CardContent className="flex gap-8 flex-col md:flex-row">
         <div className="w-full max-w-[340px]">
           <img
-            src={thumbnail}
+            src={media.thumbnail}
             alt="imagem de thumbnail"
             className=" object-contain rounded-lg border"
           />

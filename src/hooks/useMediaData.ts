@@ -15,10 +15,7 @@ export function useMediaData(url: string) {
   const query = useQuery({
     queryFn: () => fetchData(url),
     queryKey: ["media-info", url],
-    enabled: !!url,
-    refetchOnMount: false,
-    refetchOnWindowFocus: false,
-    retry: false,
+    enabled: false,
   });
 
   return {

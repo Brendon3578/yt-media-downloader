@@ -9,14 +9,19 @@ import { Progress } from "../components/ui/progress";
 import { MediaFormatDialog } from "../components/MediaFormatDialog";
 import { useMediaData } from "../hooks/useMediaData";
 import { MediaCard } from "../components/MediaCard";
-import { MediaCardSkeleton } from "../components/MediaCard/skeleton";
+import { MediaCardSkeleton } from "../components/MediaCard/MediaCardSkeleton";
+import { MediaError } from "../components/MediaCard/MediaError";
 
 export function HomePage() {
   const [url, setUrl] = useState(
     "https://www.youtube.com/watch?v=dQw4w9WgXcQ&ab_channel=RickAstley"
   );
-  const { data, isLoading } = useMediaData(url);
+  const { data, isLoading, isError, error, refetch } = useMediaData(url);
   console.log("renderizou");
+
+  function handleSearchMedia() {
+    refetch();
+  }
 
   return (
     <div className="flex flex-col gap-8">
@@ -51,6 +56,7 @@ export function HomePage() {
               size="icon"
               variant="outline"
               className="min-w-10 rounded-none"
+              onClick={handleSearchMedia}
             >
               <Search className="size-4" />
             </Button>
@@ -64,9 +70,9 @@ export function HomePage() {
           </Button>
         </MediaFormatDialog>
       </section>
-      {/* <MediaCardSkeleton /> */}
+      {isError && <MediaError error={error} />}
       {isLoading && <MediaCardSkeleton />}
-      {data?.data && <MediaCard media={data?.data} />}
+      {data?.data && !isLoading && <MediaCard media={data?.data} />}
     </div>
   );
 }
