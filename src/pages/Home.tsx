@@ -2,16 +2,8 @@ import { useEffect, useState } from "react";
 import { Input } from "../components/ui/input";
 import { Label } from "../components/ui/label";
 import { Button } from "../components/ui/button";
-import { Activity, FileMusic, Search } from "lucide-react";
-import {
-  Select,
-  SelectContent,
-  SelectGroup,
-  SelectItem,
-  SelectLabel,
-  SelectTrigger,
-  SelectValue,
-} from "../components/ui/select";
+import { Search } from "lucide-react";
+
 import { Progress } from "../components/ui/progress";
 import {
   Card,
@@ -33,12 +25,14 @@ import { MediaTable } from "./../components/MediaTable/index";
 import { mediaDetailsType } from "../types/mediaTypes";
 import { LoadingMedia } from "../components/LoadingMedia";
 import { formatMediaDuration } from "../utils/formatMediaDduration";
+import { MediaFormatDialog } from "../components/MediaFormatDialog";
 
 export function HomePage() {
   const [url, setUrl] = useState(
     "https://www.youtube.com/watch?v=dQw4w9WgXcQ&ab_channel=RickAstley"
   );
   const [mediaDetails, setMediaDetails] = useState<mediaDetailsType>();
+  console.log("renderizou");
 
   useEffect(() => {
     setMediaDetails(mediaDetailsData);
@@ -58,23 +52,6 @@ export function HomePage() {
     format.mimeType.includes("video/")
   );
 
-  const selectData = [
-    {
-      id: "music-format",
-      icon: FileMusic,
-      placeholder: "Formato personalizado",
-      label: "Formato de música",
-      items: ["MP3", "MP4", "WEBM"],
-    },
-    {
-      id: "bit-rate",
-      icon: Activity,
-      placeholder: "Taxa de bits personalizado",
-      label: "Taxa de bits",
-      items: ["128 kbps", "160 kbps", "192 kbps"],
-    },
-  ];
-
   return (
     <div className="flex flex-col gap-8">
       <h2 className="mx-auto scroll-m-20 border-b pb-2 text-3xl md:text-4xl font-extrabold tracking-tight first:mt-0">
@@ -87,14 +64,14 @@ export function HomePage() {
         para baixar a música no formato em que desejar
       </p>
 
-      <div className="flex flex-col gap-1.5">
+      <div className="flex flex-col gap-2">
         <p className="text-sm font-medium leading-none">Esperando o download</p>
         <Progress value={20} />
       </div>
 
-      <section className="flex flex-col gap-3">
-        <div className="flex flex-col gap-1.5">
-          <Label htmlFor="text">Link da música ou vídeo do YouTube</Label>
+      <section className="flex flex-col sm:flex-row gap-3 items-stretch">
+        <div className="flex flex-col gap-2 w-full">
+          <Label htmlFor="url">Link da música ou vídeo do YouTube</Label>
           <div className="flex w-full items-center">
             <Input
               type="text"
@@ -115,30 +92,11 @@ export function HomePage() {
             <Button className="rounded-l-none">Baixar MP3</Button>
           </div>
         </div>
-        <div className="flex flex-col sm:flex-row gap-3 max-w-[600px]">
-          {selectData.map((select) => (
-            <Select key={select.id}>
-              <SelectTrigger>
-                <div className="flex items-center gap-2">
-                  <select.icon className="inline-block size-4" />
-                  <SelectValue placeholder={select.placeholder} />
-                </div>
-              </SelectTrigger>
-              <SelectContent>
-                <SelectGroup>
-                  <SelectLabel>{select.label}</SelectLabel>
-                  {select.items.map((item) => (
-                    <SelectItem
-                      value={item.toLowerCase()}
-                      key={`${item}-${select.id}`}
-                      children={item}
-                    />
-                  ))}
-                </SelectGroup>
-              </SelectContent>
-            </Select>
-          ))}
-        </div>
+        <MediaFormatDialog>
+          <Button variant="secondary" className="self-end w-full sm:w-auto">
+            Baixar personalizado
+          </Button>
+        </MediaFormatDialog>
       </section>
       {mediaDetails && (
         <Card>
