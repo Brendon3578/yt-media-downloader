@@ -41,15 +41,15 @@ export function MediaCard({ media }: MediaCardProps) {
           </Badge>
         </div>
       </CardHeader>
-      <CardContent className="flex gap-8 flex-col md:flex-row">
-        <div className="w-full max-w-[340px]">
+      <CardContent className="flex flex-col md:flex-row gap-8">
+        <div className="w-full basis-1/3">
           <img
             src={media.thumbnail}
             alt="imagem de thumbnail"
-            className=" object-contain rounded-lg border"
+            className="object-contain rounded-lg border"
           />
         </div>
-        <Tabs defaultValue="mp3" className="w-full">
+        <Tabs defaultValue="mp3" className="basis-2/3 w-full">
           <div className="flex justify-between items-start">
             <h4 className="text-2xl font-semibold tracking-tight border-b border-primary px-1 pr-4">
               Tipos de mídia

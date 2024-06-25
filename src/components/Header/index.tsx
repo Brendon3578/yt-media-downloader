@@ -1,6 +1,13 @@
 import { AudioLines, Menu } from "lucide-react";
 import { Link, useLocation } from "react-router-dom";
-import { SheetContent, Sheet, SheetTrigger } from "../ui/sheet";
+import {
+  SheetContent,
+  Sheet,
+  SheetTrigger,
+  SheetHeader,
+  SheetTitle,
+  SheetDescription,
+} from "../ui/sheet";
 import { Button } from "../ui/button";
 import { ModeToggle } from "../ModeToggle";
 import { cx } from "class-variance-authority";
@@ -66,14 +73,24 @@ export function Header() {
         </Link>
 
         <SheetContent side="top" className="flex flex-col gap-8">
-          <nav className="grid gap-6 text-lg font-medium">
-            <Link
-              to="/"
-              className="max-w-min flex items-center gap-2 text-lg font-semibold md:text-base p-1.5 rounded "
-            >
-              <AudioLines className="h-6 w-6 text-primary" />
-              <span className="sr-only">Media Downloader</span>
-            </Link>
+          <SheetHeader>
+            <SheetTitle>
+              <Link
+                to="/"
+                className="max-w-min flex items-center gap-2 text-lg font-semibold md:text-base p-1.5 rounded "
+              >
+                <AudioLines className="h-6 w-6 text-primary" />
+                <span className="text-nowrap sr-only">Media Downloader</span>
+              </Link>
+            </SheetTitle>
+          </SheetHeader>
+          <SheetDescription
+            aria-describedby="navigation-menu"
+            className="sr-only"
+          >
+            Menu de navegação
+          </SheetDescription>
+          <nav className="grid gap-6 text-lg font-medium" id="navigation-menu">
             {links.map((link) => (
               <Link
                 to={link.path}

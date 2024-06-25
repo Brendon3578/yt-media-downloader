@@ -1,11 +1,11 @@
 import { AlertCircle } from "lucide-react";
 import { Alert, AlertDescription, AlertTitle } from "../ui/alert";
 
-type MediaErrorProps = {
+type MediaErrorAlertProps = {
   error: Error;
 };
 
-export function MediaError({ error }: MediaErrorProps) {
+export function MediaErrorAlert({ error }: MediaErrorAlertProps) {
   console.log(error);
   return (
     <Alert>

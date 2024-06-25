@@ -4,23 +4,47 @@ import { Label } from "../components/ui/label";
 import { Button } from "../components/ui/button";
 import { Search } from "lucide-react";
 
-import { Progress } from "../components/ui/progress";
-
 import { MediaFormatDialog } from "../components/MediaFormatDialog";
 import { useMediaData } from "../hooks/useMediaData";
 import { MediaCard } from "../components/MediaCard";
 import { MediaCardSkeleton } from "../components/MediaCard/MediaCardSkeleton";
-import { MediaError } from "../components/MediaCard/MediaError";
+import { MediaErrorAlert } from "../components/MediaCard/MediaErrorAlert";
+import { DownloadProgressBar } from "../components/DownloadProgressBar";
+import { useDownloadMedia } from "../hooks/useDownloadMedia";
+import { DownloadAlert } from "../components/DownloadAlert";
 
 export function HomePage() {
   const [url, setUrl] = useState(
     "https://www.youtube.com/watch?v=dQw4w9WgXcQ&ab_channel=RickAstley"
   );
-  const { data, isLoading, isError, error, refetch } = useMediaData(url);
+  const {
+    mutate: downloadMedia,
+    data: downloadData,
+    isPending,
+  } = useDownloadMedia();
+  const {
+    data: mediaData,
+    isLoading,
+    isError,
+    error,
+    refetch,
+  } = useMediaData(url);
   console.log("renderizou");
 
   function handleSearchMedia() {
     refetch();
+  }
+
+  function handleDownload() {
+    downloadMedia({
+      url,
+      fileSize: 10 * 1024 * 1024, // Exemplo
+      mediaType: "audio",
+      extension: "mp3",
+      audioBitrate: 128,
+      addMetadata: false,
+      addThumbnail: false,
+    });
   }
 
   return (
@@ -35,10 +59,7 @@ export function HomePage() {
         para baixar a música no formato em que desejar
       </p>
 
-      <div className="flex flex-col gap-2">
-        <p className="text-sm font-medium leading-none">Esperando o download</p>
-        <Progress value={20} />
-      </div>
+      <DownloadProgressBar />
 
       <section className="flex flex-col sm:flex-row gap-3 items-stretch">
         <div className="flex flex-col gap-2 w-full">
@@ -61,7 +82,13 @@ export function HomePage() {
               <Search className="size-4" />
             </Button>
 
-            <Button className="rounded-l-none">Baixar MP3</Button>
+            <Button
+              className="rounded-l-none"
+              onClick={handleDownload}
+              disabled={isPending}
+            >
+              {isPending ? "Baixano..." : "Baixar MP3"}
+            </Button>
           </div>
         </div>
         <MediaFormatDialog>
@@ -70,9 +97,10 @@ export function HomePage() {
           </Button>
         </MediaFormatDialog>
       </section>
-      {isError && <MediaError error={error} />}
+      {downloadData && <DownloadAlert url={downloadData.data.downloadUrl} />}
+      {isError && <MediaErrorAlert error={error} />}
       {isLoading && <MediaCardSkeleton />}
-      {data?.data && !isLoading && <MediaCard media={data?.data} />}
+      {mediaData?.data && !isLoading && <MediaCard media={mediaData?.data} />}
     </div>
   );
 }
