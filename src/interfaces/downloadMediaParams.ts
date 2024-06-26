@@ -1,7 +1,7 @@
 export interface DownloadMediaParams {
   url: string;
   fileSize: number;
-  mediaType: string;
+  mediaType: "audio" | "video";
   extension: string;
   audioBitrate?: number;
   videoResolution?: string;

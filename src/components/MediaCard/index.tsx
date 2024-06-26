@@ -11,12 +11,14 @@ import { formatMediaDuration } from "../../utils/formatMediaDduration";
 import { LoadingMedia } from "../LoadingMedia";
 import { MediaTable } from "../MediaTable";
 import { Badge } from "../ui/badge";
+import { DownloadMediaParams } from "../../interfaces/downloadMediaParams";
 
 type MediaCardProps = {
   media: MediaInfoData;
+  downloadMediaHandler: (params: Omit<DownloadMediaParams, "url">) => void;
 };
 
-export function MediaCard({ media }: MediaCardProps) {
+export function MediaCard({ media, downloadMediaHandler }: MediaCardProps) {
   const allMediaFormats = {
     mp3: media.formats
       .filter(({ mimeType }) => mimeType.includes("audio/mp4;"))
@@ -62,21 +64,30 @@ export function MediaCard({ media }: MediaCardProps) {
           </div>
           <TabsContent value="mp3">
             {allMediaFormats.mp3 ? (
-              <MediaTable formats={allMediaFormats.mp3} />
+              <MediaTable
+                formats={allMediaFormats.mp3}
+                downloadMediaHandler={downloadMediaHandler}
+              />
             ) : (
               <LoadingMedia />
             )}
           </TabsContent>
           <TabsContent value="audio">
             {allMediaFormats.audio ? (
-              <MediaTable formats={allMediaFormats.audio} />
+              <MediaTable
+                formats={allMediaFormats.audio}
+                downloadMediaHandler={downloadMediaHandler}
+              />
             ) : (
               <LoadingMedia />
             )}
           </TabsContent>
           <TabsContent value="video">
             {allMediaFormats.video ? (
-              <MediaTable formats={allMediaFormats.video} />
+              <MediaTable
+                formats={allMediaFormats.video}
+                downloadMediaHandler={downloadMediaHandler}
+              />
             ) : (
               <LoadingMedia />
             )}

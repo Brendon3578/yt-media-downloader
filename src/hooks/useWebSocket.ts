@@ -7,7 +7,9 @@ export function useWebSocket(endpoint: string) {
   const [socket, setSocket] = useState<Socket | null>(null);
   const queryClient = useQueryClient();
   useEffect(() => {
-    const newSocket = io(endpoint);
+    const newSocket = io(endpoint, {
+      reconnection: false,
+    });
 
     newSocket.on("connect", () => {
       console.log(`[socket.io] Socket.io conectado! Id: ${newSocket.id}`);

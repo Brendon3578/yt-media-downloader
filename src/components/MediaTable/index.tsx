@@ -11,12 +11,16 @@ import {
 } from "../ui/table";
 import { ScrollArea } from "../ui/scroll-area";
 import { mediaFormatType } from "../../interfaces/mediaInfoData";
+import { DownloadMediaParams } from "../../interfaces/downloadMediaParams";
 
 type MediaTableProps = {
   formats: mediaFormatType[];
+  downloadMediaHandler: (params: Omit<DownloadMediaParams, "url">) => void;
 };
 
-export function MediaTable({ formats }: MediaTableProps) {
+export function MediaTable({ formats, downloadMediaHandler }: MediaTableProps) {
+  console.log("media table renderizou");
+
   return (
     <ScrollArea className="h-[400px] pr-[9px] rounded  border border-border/50 hover:border-border">
       <ScrollableTable>
@@ -37,10 +41,15 @@ export function MediaTable({ formats }: MediaTableProps) {
               audioBitrate,
               qualityLabel,
             }) => {
-              const formatKey = `${mimeType.replace(" ", "")}-${quality}`;
+              const formatKey = `${container}-${quality}-${mimeType.replace(
+                " ",
+                ""
+              )}-${size}`;
               const mediaType = mimeType.split("/")[0];
               const isAudio = mediaType == "audio";
+              const isVideo = mediaType == "video";
               const parsedKbSize = size / 1024 || 0;
+              const videoResolution = isVideo ? qualityLabel : undefined;
 
               let fileSizeLabel = "? MB";
               if (parsedKbSize != 0) {
@@ -77,9 +86,15 @@ export function MediaTable({ formats }: MediaTableProps) {
                   <TableCell>
                     <Button
                       onClick={() => {
-                        alert("get rick rolled");
-                        window.location.href =
-                          "https://www.youtube.com/watch?v=dQw4w9WgXcQ&ab_channel=RickAstley";
+                        downloadMediaHandler({
+                          extension: container,
+                          fileSize: size,
+                          mediaType: isAudio ? "audio" : "video",
+                          ...(videoResolution && { videoResolution }),
+                          addMetadata: false,
+                          addThumbnail: false,
+                          ...(audioBitrate && { audioBitrate }),
+                        });
                       }}
                     >
                       <Download className="mr-2 h-4 w-4" /> Baixar mídia

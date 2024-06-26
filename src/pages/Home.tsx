@@ -1,8 +1,8 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { Input } from "../components/ui/input";
 import { Label } from "../components/ui/label";
 import { Button } from "../components/ui/button";
-import { Search } from "lucide-react";
+import { Check, Search } from "lucide-react";
 
 import { MediaFormatDialog } from "../components/MediaFormatDialog";
 import { useMediaData } from "../hooks/useMediaData";
@@ -12,6 +12,8 @@ import { MediaErrorAlert } from "../components/MediaCard/MediaErrorAlert";
 import { DownloadProgressBar } from "../components/DownloadProgressBar";
 import { useDownloadMedia } from "../hooks/useDownloadMedia";
 import { DownloadAlert } from "../components/DownloadAlert";
+import { DownloadMediaParams } from "../interfaces/downloadMediaParams";
+import { useToast } from "../components/ui/use-toast";
 
 export function HomePage() {
   const [url, setUrl] = useState(
@@ -20,24 +22,68 @@ export function HomePage() {
   const {
     mutate: downloadMedia,
     data: downloadData,
+    isError: isDownloadError,
+    isSuccess: isDownloadSuccess,
     isPending,
   } = useDownloadMedia();
   const {
     data: mediaData,
-    isLoading,
-    isError,
-    error,
+    isLoading: isMediaLoading,
+    isError: isMediaError,
     refetch,
   } = useMediaData(url);
   console.log("renderizou");
+
+  const { toast } = useToast();
+
+  const hasError = isDownloadError || isMediaError;
+
+  useEffect(() => {
+    if (isDownloadSuccess) {
+      toast({
+        description: (
+          <div className="flex gap-2 items-center">
+            <Check className="size-6 stroke-primary" />
+            <span>Download feito com sucesso</span>
+          </div>
+        ),
+      });
+    }
+  }, [isDownloadSuccess, toast]);
+
+  useEffect(() => {
+    if (hasError) {
+      toast({
+        title: "Oops...",
+        description:
+          "Não foi possível realizar o download ou a procura da mídia.",
+      });
+    }
+  }, [hasError, toast]);
 
   function handleSearchMedia() {
     refetch();
   }
 
-  function handleDownload() {
+  function handleDownload(params: Omit<DownloadMediaParams, "url">) {
+    console.log(url, params);
+    if (isPending) {
+      alert("Já está sendo baixado");
+      toast({
+        title: "Uma mídia já está sendo baixada.",
+        description: "Espere ela terminar para baixar outra novamente.",
+      });
+      return;
+    }
+
     downloadMedia({
       url,
+      ...params,
+    });
+  }
+
+  function handleMp3Download() {
+    handleDownload({
       fileSize: 10 * 1024 * 1024, // Exemplo
       mediaType: "audio",
       extension: "mp3",
@@ -84,23 +130,28 @@ export function HomePage() {
 
             <Button
               className="rounded-l-none"
-              onClick={handleDownload}
+              onClick={handleMp3Download}
               disabled={isPending}
             >
               {isPending ? "Baixano..." : "Baixar MP3"}
             </Button>
           </div>
         </div>
-        <MediaFormatDialog>
+        <MediaFormatDialog downloadMediaHandler={handleDownload}>
           <Button variant="secondary" className="self-end w-full sm:w-auto">
             Baixar personalizado
           </Button>
         </MediaFormatDialog>
       </section>
       {downloadData && <DownloadAlert url={downloadData.data.downloadUrl} />}
-      {isError && <MediaErrorAlert error={error} />}
-      {isLoading && <MediaCardSkeleton />}
-      {mediaData?.data && !isLoading && <MediaCard media={mediaData?.data} />}
+      {hasError && <MediaErrorAlert />}
+      {isMediaLoading && <MediaCardSkeleton />}
+      {mediaData?.data && !isMediaLoading && (
+        <MediaCard
+          media={mediaData?.data}
+          downloadMediaHandler={handleDownload}
+        />
+      )}
     </div>
   );
 }
