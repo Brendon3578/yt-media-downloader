@@ -1,13 +1,31 @@
+import { ImageOff } from "lucide-react";
+import { useWatchVideo } from "../../hooks/useWatchVideo";
+import { Skeleton } from "../ui/skeleton";
 import { VideoWithBackground } from "./VideoWithBackground";
 
 type WatchVideoBlockProps = {
-  url: string;
+  title: string;
 };
 
-export function WatchVideoBlock({ url }: WatchVideoBlockProps) {
+export function WatchVideoBlock({ title }: WatchVideoBlockProps) {
+  const { data, isLoading, isError, error, refetch } = useWatchVideo(title);
+
+  const videoUrl = `http://localhost:3000${data?.data.videoPath}`;
+
   return (
-    <div className="my-8 mt-12 ">
-      <VideoWithBackground src="http://localhost:3000/downloads/video/Vierre%20Cloud%20-%20moment%20(Official%20Audio)_1080p.mp4" />
+    <div className="my-16 ">
+      {isLoading && (
+        <Skeleton className="w-full aspect-video rounded-lg border border-border/50" />
+      )}
+      {isError && (
+        <Skeleton className="p-8 w-full aspect-video rounded-lg flex items-center justify-center gap-4">
+          <ImageOff className="size-12 stroke-destructive-foreground" />
+          <p className="text-sm font-semibold  text-destructive-foreground max-w-60">
+            É necessário o download de um vídeo para sua visualização
+          </p>
+        </Skeleton>
+      )}
+      {data?.data && <VideoWithBackground src={videoUrl} />}
       {/* <iframe
         className="absolute top-0 left-0 w-full h-full"
         src={url}

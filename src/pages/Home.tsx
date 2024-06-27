@@ -137,7 +137,7 @@ export function HomePage() {
               onClick={handleMp3Download}
               disabled={isPending}
             >
-              {isPending ? "Baixano..." : "Baixar MP3"}
+              {isPending ? "Baixando..." : "Baixar MP3"}
             </Button>
           </div>
         </div>

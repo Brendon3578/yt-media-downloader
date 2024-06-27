@@ -12,12 +12,12 @@ export const VideoWithBackground = ({
       <video
         ref={videoRef}
         controls
-        className="absolute w-full z-50 top-0 left-0 rounded-lg"
+        className="absolute w-full z-40 top-0 left-0 rounded-lg"
         {...props}
       />
       <canvas
         aria-hidden="true"
-        className="w-full h-full absolute top-0 left-0 blur-2xl scale-110 opacity-70 z-40 pointer-events-none"
+        className="w-full h-full absolute top-0 left-0 blur-2xl scale-110 opacity-70 z-30 pointer-events-none"
         ref={canvasRef}
       />
     </section>

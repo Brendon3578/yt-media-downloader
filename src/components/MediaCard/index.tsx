@@ -14,6 +14,8 @@ import { Badge } from "../ui/badge";
 import { DownloadMediaParams } from "../../interfaces/downloadMediaParams";
 import { Play } from "lucide-react";
 import { WatchVideoBlock } from "../WatchVideoBlock";
+import { useState } from "react";
+import { cn } from "../../lib/utils";
 
 type MediaCardProps = {
   media: MediaInfoData;
@@ -21,6 +23,11 @@ type MediaCardProps = {
 };
 
 export function MediaCard({ media, downloadMediaHandler }: MediaCardProps) {
+  const [tab, setTab] = useState("mp3");
+
+  const onTabChange = (value: string) => {
+    setTab(value);
+  };
   const allMediaFormats = {
     mp3: media.formats
       .filter(({ mimeType }) => mimeType.includes("audio/mp4;"))
@@ -46,17 +53,22 @@ export function MediaCard({ media, downloadMediaHandler }: MediaCardProps) {
         </div>
       </CardHeader>
       <CardContent className="flex flex-col md:flex-row gap-8">
-        <div className="w-full basis-1/3">
+        <div className={cn("w-full basis-1/3", tab == "watch" && "hidden")}>
           <img
             src={media.thumbnail}
             alt="imagem de thumbnail"
             className="object-contain rounded-lg border"
           />
         </div>
-        <Tabs defaultValue="mp3" className="basis-2/3 w-full">
+        <Tabs
+          defaultValue="mp3"
+          className={cn("basis-2/3 w-full", tab == "watch" && "basis-full")}
+          value={tab}
+          onValueChange={onTabChange}
+        >
           <div className="flex justify-between items-start">
-            <h4 className="text-2xl font-semibold tracking-tight border-b border-primary px-1 pr-4">
-              Tipos de mídia
+            <h4 className="text-2xl font-semibold tracking-tight translate-y-2 border-b border-foreground/10 px-1 pr-4">
+              Formatos de música
             </h4>
             <TabsList>
               <TabsTrigger value="mp3">MP3</TabsTrigger>
@@ -101,7 +113,7 @@ export function MediaCard({ media, downloadMediaHandler }: MediaCardProps) {
             )}
           </TabsContent>
           <TabsContent value="watch">
-            <WatchVideoBlock url={media.embed.iframeUrl} />
+            <WatchVideoBlock title={media.title} />
           </TabsContent>
         </Tabs>
       </CardContent>
