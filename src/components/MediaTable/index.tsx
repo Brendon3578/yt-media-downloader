@@ -19,7 +19,7 @@ type MediaTableProps = {
 };
 
 export function MediaTable({ formats, downloadMediaHandler }: MediaTableProps) {
-  console.log("media table renderizou");
+  console.log("MediaTable rendered!");
 
   return (
     <ScrollArea className="h-[400px] pr-[9px] rounded  border border-border/50 hover:border-border">

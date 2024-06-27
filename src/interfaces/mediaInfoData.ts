@@ -7,7 +7,13 @@ export type mediaFormatType = {
   size: number;
 };
 
+type watchEmbedType = {
+  iframeUrl: string;
+};
+
 export interface MediaInfoData {
+  embed: watchEmbedType;
+  url: string;
   title: string;
   author: string;
   thumbnail: string;

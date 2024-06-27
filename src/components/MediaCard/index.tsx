@@ -12,6 +12,8 @@ import { LoadingMedia } from "../LoadingMedia";
 import { MediaTable } from "../MediaTable";
 import { Badge } from "../ui/badge";
 import { DownloadMediaParams } from "../../interfaces/downloadMediaParams";
+import { Play } from "lucide-react";
+import { WatchVideoBlock } from "../WatchVideoBlock";
 
 type MediaCardProps = {
   media: MediaInfoData;
@@ -60,6 +62,12 @@ export function MediaCard({ media, downloadMediaHandler }: MediaCardProps) {
               <TabsTrigger value="mp3">MP3</TabsTrigger>
               <TabsTrigger value="audio">Audio</TabsTrigger>
               <TabsTrigger value="video">Video</TabsTrigger>
+              <TabsTrigger value="watch" className="group">
+                <Play
+                  className="w-4 group-aria-selected:stroke-primary"
+                  strokeWidth={3}
+                />
+              </TabsTrigger>
             </TabsList>
           </div>
           <TabsContent value="mp3">
@@ -91,6 +99,9 @@ export function MediaCard({ media, downloadMediaHandler }: MediaCardProps) {
             ) : (
               <LoadingMedia />
             )}
+          </TabsContent>
+          <TabsContent value="watch">
+            <WatchVideoBlock url={media.embed.iframeUrl} />
           </TabsContent>
         </Tabs>
       </CardContent>

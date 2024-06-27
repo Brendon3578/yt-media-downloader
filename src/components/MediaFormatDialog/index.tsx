@@ -58,6 +58,8 @@ export function MediaFormatDialog({
   children,
   downloadMediaHandler,
 }: MediaFormatDialogProps) {
+  console.log("MediaFormatDialog rendered!");
+
   const [open, setOpen] = useState(false);
   const form = useForm<CustomDownloadFormatSchema>({
     resolver: zodResolver(schema),
@@ -69,7 +71,6 @@ export function MediaFormatDialog({
     },
   });
 
-  console.log("aa");
   const onSubmit = ({
     addMetadata,
     addThumbnail,

@@ -14,8 +14,10 @@ import { useDownloadMedia } from "../hooks/useDownloadMedia";
 import { DownloadAlert } from "../components/DownloadAlert";
 import { DownloadMediaParams } from "../interfaces/downloadMediaParams";
 import { useToast } from "../components/ui/use-toast";
+import { AxiosError } from "axios";
 
 export function HomePage() {
+  // console.log("HomePage rendered!");
   const [url, setUrl] = useState(
     "https://www.youtube.com/watch?v=dQw4w9WgXcQ&ab_channel=RickAstley"
   );
@@ -24,15 +26,17 @@ export function HomePage() {
     data: downloadData,
     isError: isDownloadError,
     isSuccess: isDownloadSuccess,
+    error: downloadError,
     isPending,
   } = useDownloadMedia();
   const {
     data: mediaData,
     isLoading: isMediaLoading,
     isError: isMediaError,
+    error: mediaError,
+
     refetch,
   } = useMediaData(url);
-  console.log("renderizou");
 
   const { toast } = useToast();
 
@@ -144,7 +148,11 @@ export function HomePage() {
         </MediaFormatDialog>
       </section>
       {downloadData && <DownloadAlert url={downloadData.data.downloadUrl} />}
-      {hasError && <MediaErrorAlert />}
+      {hasError && (
+        <MediaErrorAlert
+          error={(downloadError as AxiosError) || (mediaError as AxiosError)}
+        />
+      )}
       {isMediaLoading && <MediaCardSkeleton />}
       {mediaData?.data && !isMediaLoading && (
         <MediaCard
