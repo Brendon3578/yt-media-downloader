@@ -1,4 +1,4 @@
-import { ReactNode, useState } from "react";
+import { ReactNode, useCallback, useState } from "react";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import * as z from "zod";
@@ -71,24 +71,25 @@ export function MediaFormatDialog({
     },
   });
 
-  const onSubmit = ({
-    addMetadata,
-    addThumbnail,
-    ...data
-  }: CustomDownloadFormatSchema) => {
-    if (!form.formState.isDirty && form.formState.isSubmitted) {
+  const onSubmit = useCallback(
+    ({ addMetadata, addThumbnail, ...data }: CustomDownloadFormatSchema) => {
+      const isFormValid = form.formState.isDirty && form.formState.isSubmitted;
       console.log(data);
-    }
-    downloadMediaHandler({
-      fileSize: 1024 * 1024 * 10,
-      extension: data.format,
-      audioBitrate: +data.bitrate,
-      mediaType: "audio",
-      addMetadata,
-      addThumbnail,
-    });
-    setOpen(false);
-  };
+      if (!isFormValid) {
+        return;
+      }
+      downloadMediaHandler({
+        fileSize: 1024 * 1024 * 10,
+        extension: data.format,
+        audioBitrate: +data.bitrate,
+        mediaType: "audio",
+        addMetadata,
+        addThumbnail,
+      });
+      setOpen(false);
+    },
+    [downloadMediaHandler, form.formState]
+  );
 
   return (
     <Dialog open={open} onOpenChange={setOpen}>

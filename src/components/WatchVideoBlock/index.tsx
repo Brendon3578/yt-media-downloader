@@ -1,7 +1,7 @@
 import { ImageOff } from "lucide-react";
 import { useWatchVideo } from "../../hooks/useWatchVideo";
 import { Skeleton } from "../ui/skeleton";
-import { VideoWithBackground } from "./VideoWithBackground";
+import { VideoPlayerWithAmbilight } from "./VideoPlayerWithAmbilight";
 
 type WatchVideoBlockProps = {
   title: string;
@@ -25,15 +25,7 @@ export function WatchVideoBlock({ title }: WatchVideoBlockProps) {
           </p>
         </Skeleton>
       )}
-      {data?.data && <VideoWithBackground src={videoUrl} />}
-      {/* <iframe
-        className="absolute top-0 left-0 w-full h-full"
-        src={url}
-        allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share"
-        referrerPolicy="strict-origin-when-cross-origin"
-        title="Embedded youtube"
-        allowFullScreen
-      /> */}
+      {data?.data && <VideoPlayerWithAmbilight src={videoUrl} />}
     </div>
   );
 }

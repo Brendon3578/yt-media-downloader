@@ -1,4 +1,4 @@
-import { MediaInfoData } from "../../interfaces/mediaInfoData";
+import { mediaFormatType, MediaInfoData } from "../../interfaces/mediaInfoData";
 import {
   Card,
   CardContent,
@@ -14,30 +14,58 @@ import { Badge } from "../ui/badge";
 import { DownloadMediaParams } from "../../interfaces/downloadMediaParams";
 import { Play } from "lucide-react";
 import { WatchVideoBlock } from "../WatchVideoBlock";
-import { useState } from "react";
+import { useCallback, useMemo, useState } from "react";
 import { cn } from "../../lib/utils";
+import { estimateAudioFileSize } from "../../utils/estimateAudioFileSize";
 
 type MediaCardProps = {
   media: MediaInfoData;
   downloadMediaHandler: (params: Omit<DownloadMediaParams, "url">) => void;
 };
 
+const filterAndMapAudioFormatsForMp3 = (
+  formats: mediaFormatType[],
+  containerReplacement: string
+): mediaFormatType[] => {
+  return formats
+    .filter(({ mimeType }) => mimeType.includes(containerReplacement || ""))
+    .map((format) => ({
+      ...format,
+      container: containerReplacement
+        ? format.container.replace("mp4", "mp3")
+        : format.container,
+    }));
+};
+
+const filterAudioFormats = (formats: mediaFormatType[]): mediaFormatType[] =>
+  formats.filter((format) => format.mimeType.includes("audio/"));
+
+const filterAndAdjustVideoFormats = (
+  formats: mediaFormatType[],
+  mediaDuration: string
+): mediaFormatType[] =>
+  formats
+    .filter((format) => format.mimeType.includes("video/"))
+    .map((format) => ({
+      ...format,
+      size: estimateAudioFileSize(mediaDuration) + format.size,
+    }));
+
 export function MediaCard({ media, downloadMediaHandler }: MediaCardProps) {
   const [tab, setTab] = useState("mp3");
 
-  const onTabChange = (value: string) => {
+  const onTabChange = useCallback((value: string) => {
     setTab(value);
-  };
-  const allMediaFormats = {
-    mp3: media.formats
-      .filter(({ mimeType }) => mimeType.includes("audio/mp4;"))
-      .map((format) => ({
-        ...format,
-        container: format.container.replace("mp4", "mp3"),
-      })),
-    audio: media.formats.filter((format) => format.mimeType.includes("audio/")),
-    video: media.formats.filter((format) => format.mimeType.includes("video/")),
-  };
+  }, []);
+
+  const allMediaFormats = useMemo(
+    () => ({
+      mp3: filterAndMapAudioFormatsForMp3(media.formats, "audio/mp4;"),
+      audio: filterAudioFormats(media.formats),
+      video: filterAndAdjustVideoFormats(media.formats, media.duration),
+    }),
+    [media]
+  );
 
   return (
     <Card>
@@ -67,16 +95,16 @@ export function MediaCard({ media, downloadMediaHandler }: MediaCardProps) {
           onValueChange={onTabChange}
         >
           <div className="flex justify-between items-start">
-            <h4 className="text-2xl font-semibold tracking-tight translate-y-2 border-b border-foreground/10 px-1 pr-4">
-              Formatos de música
+            <h4 className="text-2xl font-semibold tracking-tight translate-y-2 border-b border-foreground/10 pr-2 pl-0.5">
+              Formatos de mídia
             </h4>
             <TabsList>
               <TabsTrigger value="mp3">MP3</TabsTrigger>
               <TabsTrigger value="audio">Audio</TabsTrigger>
               <TabsTrigger value="video">Video</TabsTrigger>
-              <TabsTrigger value="watch" className="group">
+              <TabsTrigger value="watch" className="group max-h-8">
                 <Play
-                  className="w-4 group-aria-selected:stroke-primary"
+                  className="w-4 group-aria-selected:stroke-primary group-hover:stroke-primary"
                   strokeWidth={3}
                 />
               </TabsTrigger>

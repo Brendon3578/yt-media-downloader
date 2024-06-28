@@ -1,11 +1,11 @@
 import { useRef, useEffect } from "react";
 
-interface UseVideoBackgroundProps {
+interface UseVideoAmbilightProps {
   canvasRef: React.RefObject<HTMLCanvasElement>;
   videoRef: React.RefObject<HTMLVideoElement>;
 }
 
-export const useVideoBackground = (): UseVideoBackgroundProps => {
+export const useVideoAmbilight = (): UseVideoAmbilightProps => {
   const mediaQuery = window.matchMedia("(prefers-reduced-motion: reduce)");
   const canvasRef = useRef<HTMLCanvasElement>(null);
   const videoRef = useRef<HTMLVideoElement>(null);

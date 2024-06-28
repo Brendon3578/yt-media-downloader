@@ -1,4 +1,4 @@
-import { useEffect, useState } from "react";
+import { useCallback, useEffect, useMemo, useState } from "react";
 import { Input } from "../components/ui/input";
 import { Label } from "../components/ui/label";
 import { Button } from "../components/ui/button";
@@ -21,6 +21,8 @@ export function HomePage() {
   const [url, setUrl] = useState(
     "https://www.youtube.com/watch?v=dQw4w9WgXcQ&ab_channel=RickAstley"
   );
+  const [previousUrl, setPreviousUrl] = useState(url);
+
   const {
     mutate: downloadMedia,
     data: downloadData,
@@ -40,7 +42,10 @@ export function HomePage() {
 
   const { toast } = useToast();
 
-  const hasError = isDownloadError || isMediaError;
+  const hasError = useMemo(
+    () => isDownloadError || isMediaError,
+    [isDownloadError, isMediaError]
+  );
 
   useEffect(() => {
     if (isDownloadSuccess) {
@@ -65,28 +70,33 @@ export function HomePage() {
     }
   }, [hasError, toast]);
 
-  function handleSearchMedia() {
-    refetch();
-  }
-
-  function handleDownload(params: Omit<DownloadMediaParams, "url">) {
-    console.log(url, params);
-    if (isPending) {
-      alert("Já está sendo baixado");
-      toast({
-        title: "Uma mídia já está sendo baixada.",
-        description: "Espere ela terminar para baixar outra novamente.",
-      });
-      return;
+  const handleSearchMedia = useCallback(() => {
+    if (url !== previousUrl) {
+      setPreviousUrl(url);
+      refetch();
     }
+  }, [url, previousUrl, refetch]);
 
-    downloadMedia({
-      url,
-      ...params,
-    });
-  }
+  const handleDownload = useCallback(
+    (params: Omit<DownloadMediaParams, "url">) => {
+      console.log(url, params);
+      if (isPending) {
+        toast({
+          title: "Uma mídia já está sendo baixada.",
+          description: "Espere ela terminar para baixar outra novamente.",
+        });
+        return;
+      }
 
-  function handleMp3Download() {
+      downloadMedia({
+        url,
+        ...params,
+      });
+    },
+    [url, isPending, downloadMedia, toast]
+  );
+
+  const handleMp3Download = useCallback(() => {
     handleDownload({
       fileSize: 10 * 1024 * 1024, // Exemplo
       mediaType: "audio",
@@ -95,13 +105,12 @@ export function HomePage() {
       addMetadata: false,
       addThumbnail: false,
     });
-  }
+  }, [handleDownload]);
 
   return (
     <div className="flex flex-col gap-8">
       <h2 className="mx-auto scroll-m-20 border-b pb-2 text-3xl md:text-4xl font-extrabold tracking-tight first:mt-0">
-        Baixe músicas ou vídeos do&nbsp;
-        <span className="text-primary">YouTube</span>
+        Baixe músicas ou vídeos do <span className="text-primary">YouTube</span>
       </h2>
 
       <p className="leading-7 ">
