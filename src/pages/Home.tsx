@@ -108,7 +108,7 @@ export function HomePage() {
   }, [handleDownload]);
 
   return (
-    <div className="flex flex-col gap-8">
+    <div className="flex flex-col gap-8 mt-8 p-2">
       <h2 className="mx-auto scroll-m-20 border-b pb-2 text-3xl md:text-4xl font-extrabold tracking-tight first:mt-0">
         Baixe músicas ou vídeos do <span className="text-primary">YouTube</span>
       </h2>
