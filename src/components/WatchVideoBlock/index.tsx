@@ -8,7 +8,7 @@ type WatchVideoBlockProps = {
 };
 
 export function WatchVideoBlock({ title }: WatchVideoBlockProps) {
-  const { data, isLoading, isError, error, refetch } = useWatchVideo(title);
+  const { data, isLoading, isError } = useWatchVideo(title);
 
   const videoUrl = `http://localhost:3000${data?.data.videoPath}`;
 

@@ -1,121 +1,23 @@
-import { mediaDetailsType } from "../types/mediaTypes";
+export const randomUrls = [
+  "https://www.youtube.com/watch?v=dQw4w9WgXcQ&ab_channel=RickAstley",
+  "https://www.youtube.com/watch?v=1QMG2QjsjdA&ab_channel=VierreCloudVEVO",
+  "https://www.youtube.com/watch?v=IgIdKSv6pl8&ab_channel=IndieRecords",
+  "https://www.youtube.com/watch?v=cxSzri346W0&ab_channel=TimMaia-Topic",
+  "https://www.youtube.com/watch?v=widZEAJc0QM&ab_channel=SundaeMMD",
+  "https://www.youtube.com/watch?v=I7sjizUrZh4&ab_channel=Adrian",
+  "https://www.youtube.com/watch?v=oowBXzfcl90&ab_channel=AOM",
+  "https://www.youtube.com/watch?v=7wtfhZwyrcc&ab_channel=ImagineDragonsVEVO",
+  "https://www.youtube.com/watch?v=L_jWHffIx5E&ab_channel=SmashMouthVEVO",
+  "https://www.youtube.com/watch?v=DC5WIRdqQKY&ab_channel=Abeon",
+  "https://www.youtube.com/watch?v=52Gg9CqhbP8&ab_channel=STUCKINTHESOUND",
+  "https://www.youtube.com/watch?v=k_9tDtXYLq8&ab_channel=UltimateSpidey1610",
+  "https://www.youtube.com/watch?v=1oOBjyOKu2o&ab_channel=Neobrane",
+  "https://www.youtube.com/watch?v=7aMOurgDB-o&ab_channel=Crunchyroll",
+  "https://www.youtube.com/watch?v=P75q_3Qlrqg&ab_channel=Crunchyroll",
+];
 
-const mediaDetailsData: mediaDetailsType = {
-  title: "Rick Astley - Never Gonna Give You Up (Official Music Video)",
-  author: "Rick Astley",
-  thumbnail: "https://i.ytimg.com/vi_webp/dQw4w9WgXcQ/maxresdefault.webp",
-  duration: "213",
-  formats: [
-    {
-      mimeType: 'video/mp4; codecs="avc1.640028"',
-      container: "mp4",
-      audioBitrate: null,
-      quality: "hd1080",
-      qualityLabel: "1080p",
-      size: 80170781,
-    },
-    {
-      mimeType: 'video/mp4; codecs="av01.0.05M.08"',
-      container: "mp4",
-      quality: "hd720",
-      qualityLabel: "720p",
-      size: 15710398,
-    },
-    {
-      mimeType: 'video/mp4; codecs="av01.0.04M.08"',
-      container: "mp4",
-      quality: "large",
-      qualityLabel: "480p",
-      size: 8577091,
-    },
-    {
-      mimeType: 'video/mp4; codecs="av01.0.01M.08"',
-      container: "mp4",
-      quality: "medium",
-      qualityLabel: "360p",
-      size: 5083621,
-    },
-    {
-      mimeType: 'video/mp4; codecs="avc1.4d4015"',
-      container: "mp4",
-      audioBitrate: null,
-      quality: "small",
-      qualityLabel: "240p",
-      size: 3020923,
-    },
-    {
-      mimeType: 'video/mp4; codecs="avc1.4d400c"',
-      container: "mp4",
-      audioBitrate: null,
-      quality: "tiny",
-      qualityLabel: "144p",
-      size: 1864273,
-    },
-    {
-      mimeType: 'audio/mp4; codecs="mp4a.40.2"',
-      container: "mp4",
-      audioBitrate: 128,
-      quality: "tiny",
-      qualityLabel: null,
-      size: 3433605,
-    },
-    {
-      mimeType: 'video/webm; codecs="vp9"',
-      container: "webm",
-      audioBitrate: null,
-      quality: "hd1080",
-      qualityLabel: "1080p",
-      size: 41148795,
-    },
-    {
-      mimeType: 'video/webm; codecs="vp9"',
-      container: "webm",
-      audioBitrate: null,
-      quality: "hd720",
-      qualityLabel: "720p",
-      size: 15360749,
-    },
-    {
-      mimeType: 'video/webm; codecs="vp9"',
-      container: "webm",
-      audioBitrate: null,
-      quality: "large",
-      qualityLabel: "480p",
-      size: 9353813,
-    },
-    {
-      mimeType: 'video/webm; codecs="vp9"',
-      container: "webm",
-      audioBitrate: null,
-      quality: "medium",
-      qualityLabel: "360p",
-      size: 6625667,
-    },
-    {
-      mimeType: 'video/webm; codecs="vp9"',
-      container: "webm",
-      audioBitrate: null,
-      quality: "small",
-      qualityLabel: "240p",
-      size: 3902115,
-    },
-    {
-      mimeType: 'video/webm; codecs="vp9"',
-      container: "webm",
-      audioBitrate: null,
-      quality: "tiny",
-      qualityLabel: "144p",
-      size: 2405376,
-    },
-    {
-      mimeType: 'audio/webm; codecs="opus"',
-      container: "webm",
-      audioBitrate: 160,
-      quality: "tiny",
-      qualityLabel: null,
-      size: 3437753,
-    },
-  ],
-};
-
-export { mediaDetailsData };
+export function getRandomItem<T>(array: Array<T>): T {
+  const randomIndex = Math.floor(Math.random() * array.length);
+  return array[randomIndex];
+}
+export const getRandomMusic = () => getRandomItem(randomUrls);

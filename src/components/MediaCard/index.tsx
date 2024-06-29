@@ -96,7 +96,9 @@ export function MediaCard({ media, downloadMediaHandler }: MediaCardProps) {
         >
           <div className="flex justify-between items-start">
             <h4 className="text-2xl font-semibold tracking-tight translate-y-2 border-b border-foreground/10 pr-2 pl-0.5">
-              Formatos de mídia
+              {tab == "watch"
+                ? "Assistir vídeo"
+                : `Formatos de ${tab == "video" ? "videos" : "áudios"}`}
             </h4>
             <TabsList>
               <TabsTrigger value="mp3">MP3</TabsTrigger>

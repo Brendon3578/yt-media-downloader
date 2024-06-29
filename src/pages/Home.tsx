@@ -15,13 +15,12 @@ import { DownloadAlert } from "../components/DownloadAlert";
 import { DownloadMediaParams } from "../interfaces/downloadMediaParams";
 import { useToast } from "../components/ui/use-toast";
 import { AxiosError } from "axios";
+import { getRandomMusic } from "../utils/data";
 
 export function HomePage() {
   // console.log("HomePage rendered!");
-  const [url, setUrl] = useState(
-    "https://www.youtube.com/watch?v=dQw4w9WgXcQ&ab_channel=RickAstley"
-  );
-  const [previousUrl, setPreviousUrl] = useState(url);
+  const [url, setUrl] = useState(getRandomMusic());
+  const [previousUrl, setPreviousUrl] = useState("");
 
   const {
     mutate: downloadMedia,
