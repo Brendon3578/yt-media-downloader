@@ -63,10 +63,6 @@ export const MediaTable = memo(
                 audioBitrate,
                 qualityLabel,
               }) => {
-                const formatKey = `${container}-${quality}-${mimeType.replace(
-                  " ",
-                  ""
-                )}-${size}`;
                 const mediaType = mimeType.split("/")[0];
                 const isAudio = mediaType == "audio";
                 const isVideo = mediaType == "video";
@@ -74,10 +70,14 @@ export const MediaTable = memo(
 
                 const fileSizeLabel = formatFileSize(size);
                 const label = isAudio
-                  ? `${container} (${audioBitrate} kbps)`
+                  ? `${container} (${audioBitrate || "?"} kbps)`
                   : `${qualityLabel} (${container})`;
                 const codecLabel = getCodecLabel(mimeType);
 
+                const formatKey = `${label}-${container}-${quality}-${mimeType.replace(
+                  " ",
+                  ""
+                )}-${size}`;
                 return (
                   <TableRow key={formatKey}>
                     <TableCell className="font-medium">{label}</TableCell>
@@ -89,9 +89,14 @@ export const MediaTable = memo(
                         <Badge variant="secondary" title="Tipo de codificação">
                           {codecLabel}
                         </Badge>
-                        <Badge variant="secondary" title="Qualidade do arquivo">
-                          {quality}
-                        </Badge>
+                        {quality && (
+                          <Badge
+                            variant="secondary"
+                            title="Qualidade do arquivo"
+                          >
+                            {quality}
+                          </Badge>
+                        )}
                       </div>
                     </TableCell>
                     <TableCell>
@@ -104,7 +109,9 @@ export const MediaTable = memo(
                             ...(videoResolution && { videoResolution }),
                             addMetadata: false,
                             addThumbnail: false,
-                            ...(audioBitrate && { audioBitrate }),
+                            ...(audioBitrate && {
+                              audioBitrate: audioBitrate ?? 128,
+                            }),
                           });
                         }}
                       >

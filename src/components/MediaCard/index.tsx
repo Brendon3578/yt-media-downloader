@@ -28,7 +28,10 @@ const filterAndMapAudioFormatsForMp3 = (
   containerReplacement: string
 ): mediaFormatType[] => {
   return formats
-    .filter(({ mimeType }) => mimeType.includes(containerReplacement || ""))
+    .filter(
+      ({ mimeType, audioBitrate }) =>
+        mimeType.includes(containerReplacement || "") && audioBitrate
+    )
     .map((format) => ({
       ...format,
       container: containerReplacement
@@ -38,7 +41,9 @@ const filterAndMapAudioFormatsForMp3 = (
 };
 
 const filterAudioFormats = (formats: mediaFormatType[]): mediaFormatType[] =>
-  formats.filter((format) => format.mimeType.includes("audio/"));
+  formats.filter(
+    (format) => format.mimeType.includes("audio/") && format.audioBitrate
+  );
 
 const filterAndAdjustVideoFormats = (
   formats: mediaFormatType[],
